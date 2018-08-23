@@ -3,7 +3,7 @@
 file="$1"
 
 if [ "$file" = "" ]; then
-    echo "Usage: $0 <mp3-file>"
+    echo "Usage: $0 <mp3-file/directory>"
     exit
 fi
 
@@ -27,6 +27,9 @@ function compand {
     # Write the normalised file to the compand directory.
     lame --preset standard "$base-c.wav" "compand/$base.mp3"
     rm "$base.wav" "$base-c.wav"
+
+    # Copy tags.
+    id3cp "$file" "compand/$base.mp3"
 }
 
 if [ -d "$file" ]; then
