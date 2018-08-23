@@ -1,0 +1,38 @@
+#!/bin/bash
+
+file="$1"
+
+if [ "$file" = "" ]; then
+    echo "Usage: $0 <mp3-file>"
+    exit
+fi
+
+function compand {
+    file="$1"
+    echo "Normalising $file..."
+    base=$(echo "$file" | sed 's/.mp3//')
+
+    # First create a wav file.
+    mpg321 -w "$base.wav" "$file"
+
+    # Normalise it.
+    sox -v 0.7 "$base.wav" "$base-c.wav"\
+	compand 0.01,1 -80,-80,-55,-20,-20,-15,0,0 0 -40 0.1 norm -0.5
+
+    dir=$(dirname "$file")
+    if [ ! -d "compand/$dir" ]; then
+	mkdir -p "compand/$dir"
+    fi
+
+    # Write the normalised file to the compand directory.
+    lame --preset standard "$base-c.wav" "compand/$base.mp3"
+    rm "$base.wav" "$base-c.wav"
+}
+
+if [ -d "$file" ]; then
+    find "$file" -name '*.mp3' | while read f; do
+	compand "$f"
+    done
+else
+    compand "$file"
+fi
