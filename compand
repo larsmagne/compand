@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This script depends on a number of packages.  On Debian GNU/Linux,
+# say:
+
+# apt install libid3-tools sox lame mpg321
+
 file="$1"
 
 if [ "$file" = "" ]; then
