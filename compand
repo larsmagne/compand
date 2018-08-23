@@ -38,7 +38,7 @@ function compand {
 }
 
 if [ -d "$file" ]; then
-    find "$file" -name '*.mp3' | while read f; do
+    find "$file" -name '*.mp3' | grep -v /compand/ | while read f; do
 	compand "$f"
     done
 else
